@@ -1,0 +1,7 @@
+- hosts: webservers
+
+  tasks:
+    - name: test connexion
+      ping:
+    - name: create conf file
+      file: path=/etc/foo.conf state=touch 
