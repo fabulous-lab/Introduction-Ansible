@@ -1,0 +1,21 @@
+- name : Configure webserver with nginx
+  hosts : lb
+  sudo : True
+  tasks :
+    - name : create /etc/haproxy/ directory
+      file: path=/etc/haproxy state=directory
+
+    - name : install haproxy
+      apt : name=haproxy
+
+    - name : copy haproxy.cfg
+      template : >
+        src=../templates/haproxy.cfg.j2
+        dest=/etc/haproxy/haproxy.cfg
+        mode=0644
+        force=yes
+      register: haproxycfg
+
+    - name : start haproxy
+      shell :  /usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg -D -p /var/run/haproxy.pid -sf $(cat /var/run/haproxy.pid)
+      when : haproxycfg.changed
