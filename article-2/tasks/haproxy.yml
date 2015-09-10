@@ -1,14 +1,14 @@
-- name : Configure webserver with nginx
+- name : Configure haproxy loadbalacer
   hosts : lb
   sudo : True
   tasks :
-    - name : create /etc/haproxy/ directory
+    - name : Create /etc/haproxy/ directory
       file: path=/etc/haproxy state=directory
 
-    - name : install haproxy
+    - name : Nnstall Haproxy
       apt : name=haproxy
 
-    - name : copy haproxy.cfg
+    - name : Copy haproxy.cfg
       template : >
         src=../templates/haproxy.cfg.j2
         dest=/etc/haproxy/haproxy.cfg
@@ -16,6 +16,6 @@
         force=yes
       register: haproxycfg
 
-    - name : start haproxy
+    - name : Restart haproxy
       shell :  /usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg -D -p /var/run/haproxy.pid -sf $(cat /var/run/haproxy.pid)
       when : haproxycfg.changed
