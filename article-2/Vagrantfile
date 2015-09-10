@@ -1,0 +1,33 @@
+boxes = [
+    {
+        :name => "web1",
+        :eth1 => "192.168.43.42"
+    },
+    {
+        :name => "web2",
+        :eth1 => "192.168.43.43"
+    },
+    {
+        :name => "lb",
+        :eth1 => "192.168.43.44"
+    }
+]
+
+Vagrant.configure(2) do |config|
+
+  config.vm.box = "ubuntu/trusty32"
+
+  boxes.each do |opts|
+    config.vm.define opts[:name] do |config|
+      config.vm.hostname = opts[:name]
+      config.vm.network :private_network, ip: opts[:eth1]
+      config.vm.provision "shell" do |s|
+        ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_rsa.pub").first.strip
+        s.inline = <<-SHELL
+          echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys
+          echo #{ssh_pub_key} >> /root/.ssh/authorized_keys
+        SHELL
+    end
+  end
+end
+end

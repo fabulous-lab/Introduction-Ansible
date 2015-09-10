@@ -1,0 +1,21 @@
+- name : Configure webservers and deploy
+  hosts : webservers
+  sudo : True
+  tasks :
+    
+    - name : Install Nginx
+      apt : name=nginx update_cache=yes
+
+    - name : Copy Nginx config file
+      copy : src=../files/nginx.conf dest=/etc/nginx/ 
+      notify : restart nginx
+
+    - name : Copy index.html
+      template : >
+        src=../templates/index.html.j2
+        dest=/usr/share/nginx/html/index.html
+        mode=0644
+
+  handlers :
+    - name : restart nginx
+      service : name=nginx state=restarted
