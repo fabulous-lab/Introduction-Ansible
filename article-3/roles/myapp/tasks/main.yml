@@ -1,0 +1,22 @@
+---
+# tasks file for myapp
+- name: Create myapp log directory
+  file: path=/var/log/myapp/ state=directory mode=0755
+
+- name : Install supervisor
+  apt : name=supervisor
+
+- name: Get my app jar from repository
+  shell: 
+    wget https://raw.githubusercontent.com/fabulous-lab/spring-boot-postgres-sample/master/target/myapp-0.0.1-SNAPSHOT.jar
+    chdir=/home/vagrant/ 
+
+
+- name : Copy supervisor config file
+  copy : src=../files/myapp.conf dest=/etc/supervisor/conf.d/
+
+- name : Restart supervisor
+  service : name=supervisor state=restarted
+
+- name : Wait myapp start
+  wait_for: port=8080 delay=10

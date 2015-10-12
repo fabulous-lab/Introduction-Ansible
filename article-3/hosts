@@ -1,0 +1,8 @@
+[dbs]
+postegressqlserver ansible_ssh_host=192.168.44.42 ansible_ssh_port=22 ansible_ssh_user=root
+
+[elasticseachs]
+elasticsearchserver ansible_ssh_host=192.168.44.43 ansible_ssh_port=22 ansible_ssh_user=root
+
+[webapps]
+webappserver ansible_ssh_host=192.168.44.44 ansible_ssh_port=22 ansible_ssh_user=root
