@@ -8,15 +8,20 @@
 
 - name: Get my app jar from repository
   shell: 
-    wget https://raw.githubusercontent.com/fabulous-lab/spring-boot-postgres-sample/master/target/myapp-0.0.1-SNAPSHOT.jar
+    wget https://raw.githubusercontent.com/fabulous-lab/spring-boot-postgres-sample/master/target/myapp-{{myapp_version}}-SNAPSHOT.jar
     chdir=/home/vagrant/ 
 
-
+- name : Rename myapp jar
+  command : mv /home/vagrant/myapp-{{myapp_version}}-SNAPSHOT.jar /home/vagrant/myapp.jar
+  
 - name : Copy supervisor config file
   copy : src=../files/myapp.conf dest=/etc/supervisor/conf.d/
 
-- name : Restart supervisor
+- name : Start supervisor
   service : name=supervisor state=restarted
+
+- name : Start/Restart myapp
+  supervisorctl: name=myapp state=started
 
 - name : Wait myapp start
   wait_for: port=8080 delay=10
